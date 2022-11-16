@@ -1,5 +1,6 @@
 import './App.css';
-
+import axios from 'axios'
+import { useEffect, useState, useRef } from 'react'
 
 // #1 npm install axios
 // #2 import axios from './axios'
@@ -14,15 +15,44 @@ import './App.css';
 
 function App() {
 
+  // request the data you want to get or manipulate
+  // const response = axios.get("https://api.github.com/users/brionnedavis724")
+  //   // what do you want done after promise is fullfilled
+  //   // .then() takes callback function as a param
+  //   .then((res) => {
+  //     console.log(res)
+  //   })
 
+    const [userData, setUserData] = useState({}) // use useState to store data to be used/manipulated later on
+    const [user, setUser] = useState("lancetoledo")
 
+    useEffect(() => {
+      const getUser = async () => {
+        try {
+          // const response = axios.get("https://api.github.com/users/brionnedavis724")
+          const response = await axios.get(`https://api.github.com/users/${user}`)
+          // gain access to .json data
+          .then((res) => {
+            setUserData(res.data)
+            // console.log(res.data)
+          })
+        }
+        catch (error) { // any error messages?
+          console.log(error)
+        }
+      }
+      getUser()
+    },[user])
 
-
+  // console.log(useRef())
+  // console.log(userRef)
+  // console.log(userRef.current)
+  // console.log(userRef.current.value)
+  const userRef = useRef()
 
   return (
       <div className="App">
         <div className='container'>
-
 
           <div className="header">
             <h4>devfinder</h4>
@@ -34,9 +64,11 @@ function App() {
 
           <div className="search" id="search_container">
             <img src="./assets/icon-search.svg" alt=""/>
-            <input id ="input" type="text" placeholder="Search Github username..."/>
+            {/* <input id ="input" type="text" placeholder="Search Github username..."/> */}
+            {/* reference the input element below */}
+            <input ref = {userRef} id ="input" type="text" placeholder="Search Github username..."/>
             <div className="search_btn">
-              <button id="search">Search</button>
+              <button onClick={()=> setUser(userRef.current.value)} id="search">Search</button>
             </div>
           </div>
 
@@ -59,6 +91,7 @@ function App() {
                 <div className="name" >
 
                   <h3 id = "name">The Octocat</h3>
+                  {/* <h3 id = "name">{user.name}</h3> */}
 
                   <div className="username">
                     <p id="login">@octocat</p>
